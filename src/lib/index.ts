@@ -91,8 +91,7 @@ export default function animatedDetails(
 				if (transitioning) return;
 
 				if (element.open) {
-					element.open = false;
-					setTimeout(() => animatePanel(true), 1000);
+					animatePanel(true);
 				}
 			}
 		}
