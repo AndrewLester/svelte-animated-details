@@ -38,15 +38,16 @@ export default function animatedDetails(
 
 	let transitioning = false;
 
-	const animatePanel = (opening: boolean, skipOpen = false) => {
+	const animatePanel = (opening: boolean) => {
 		transitioning = true;
 
-		if (!skipOpen && opening) {
+		if (opening) {
 			element.open = true;
-			element.dispatchEvent(
-				new CustomEvent(opening ? 'openstart' : 'closestart', { detail: element })
-			);
 		}
+
+		element.dispatchEvent(
+			new CustomEvent(opening ? 'openstart' : 'closestart', { detail: element })
+		);
 
 		const heightKeyframes = [`${summary.clientHeight}px`, `${element.clientHeight}px`];
 
@@ -91,7 +92,8 @@ export default function animatedDetails(
 				if (transitioning) return;
 
 				if (element.open) {
-					animatePanel(true, true);
+					element.open = false;
+					animatePanel(true);
 				}
 			}
 		}
