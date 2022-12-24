@@ -8,7 +8,10 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		adapter: adapter()
+		adapter: adapter(),
+		alias: {
+			'svelte-animated-details': 'src/lib'
+		}
 	}
 };
 
