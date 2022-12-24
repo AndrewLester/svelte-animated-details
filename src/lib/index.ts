@@ -92,7 +92,7 @@ export default function animatedDetails(
 
 				if (element.open) {
 					element.open = false;
-					setTimeout(() => animatePanel(true));
+					setTimeout(() => animatePanel(true), 1000);
 				}
 			}
 		}
