@@ -38,10 +38,10 @@ export default function animatedDetails(
 
 	let transitioning = false;
 
-	const animatePanel = (opening: boolean) => {
+	const animatePanel = (opening: boolean, skipOpen = false) => {
 		transitioning = true;
 
-		if (opening) {
+		if (!skipOpen && opening) {
 			element.open = true;
 		}
 
@@ -92,7 +92,7 @@ export default function animatedDetails(
 				if (transitioning) return;
 
 				if (element.open) {
-					animatePanel(true);
+					animatePanel(true, true);
 				}
 			}
 		}
