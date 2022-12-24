@@ -43,11 +43,10 @@ export default function animatedDetails(
 
 		if (!skipOpen && opening) {
 			element.open = true;
+			element.dispatchEvent(
+				new CustomEvent(opening ? 'openstart' : 'closestart', { detail: element })
+			);
 		}
-
-		element.dispatchEvent(
-			new CustomEvent(opening ? 'openstart' : 'closestart', { detail: element })
-		);
 
 		const heightKeyframes = [`${summary.clientHeight}px`, `${element.clientHeight}px`];
 
