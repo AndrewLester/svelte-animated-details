@@ -87,24 +87,31 @@ export default function animatedDetails(
 	const onMutate: MutationCallback = (mutationList) => {
 		for (const mutation of mutationList) {
 			if (mutation.type === 'attributes' && mutation.attributeName === 'open') {
+				console.log('mutated');
 				if (transitioning) return;
 
 				if (element.open) {
 					element.open = false;
-					animatePanel(true);
+					setTimeout(() => animatePanel(true));
 				}
 			}
 		}
 	};
 
+	const onToggle = () => {
+		console.log('toggled');
+	};
+
 	const observer = new MutationObserver(onMutate);
 	observer.observe(element, { attributes: true });
+	element.addEventListener('toggle', onToggle);
 	summary.addEventListener('click', onClick);
 
 	return {
 		destroy() {
 			observer.disconnect();
 			summary.removeEventListener('click', onClick);
+			element.removeEventListener('toggle', onToggle);
 		},
 		update(newOptions: KeyframeAnimationOptions = defaultOptions) {
 			options = {
