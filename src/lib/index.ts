@@ -1,7 +1,5 @@
 import type { ActionReturn } from 'svelte/action';
 
-type AnimatedDetailsOptions = Pick<KeyframeAnimationOptions, 'duration' | 'easing'>;
-
 type EventHandler = (e: CustomEvent<HTMLDetailsElement>) => void;
 
 type Attributes = {
@@ -11,15 +9,15 @@ type Attributes = {
 	'on:closeend'?: EventHandler;
 };
 
-const defaultOptions: AnimatedDetailsOptions = {
+const defaultOptions: KeyframeAnimationOptions = {
 	duration: 400,
 	easing: 'ease-out'
 };
 
 export default function animatedDetails(
 	element: HTMLDetailsElement,
-	options: Partial<AnimatedDetailsOptions> = defaultOptions
-): ActionReturn<AnimatedDetailsOptions, Attributes> {
+	options: KeyframeAnimationOptions = defaultOptions
+): ActionReturn<KeyframeAnimationOptions, Attributes> {
 	const summary = element.querySelector('summary');
 	if (!summary) return {};
 
@@ -108,7 +106,7 @@ export default function animatedDetails(
 			observer.disconnect();
 			summary.removeEventListener('click', onClick);
 		},
-		update(newOptions: Partial<AnimatedDetailsOptions> = defaultOptions) {
+		update(newOptions: KeyframeAnimationOptions = defaultOptions) {
 			options = {
 				...options,
 				...newOptions
