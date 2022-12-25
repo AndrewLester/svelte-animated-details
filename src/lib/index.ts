@@ -1,96 +1,116 @@
-const dangerousAttributes = new Set(['class', 'style', 'id', 'hidden', 'height', 'width']);
-const summaryHeightVar = '--summary-height';
-const fullHeightVar = '--full-height';
+import type { ActionReturn } from 'svelte/action';
+import { DEV } from 'esm-env';
 
-export default function animatedDetails(element: HTMLDetailsElement) {
+type EventHandler = (e: CustomEvent<HTMLDetailsElement>) => void;
+
+type Attributes = {
+	'on:openstart'?: EventHandler;
+	'on:openend'?: EventHandler;
+	'on:closestart'?: EventHandler;
+	'on:closeend'?: EventHandler;
+};
+
+const defaultOptions: KeyframeAnimationOptions = {
+	duration: 400,
+	easing: 'ease-out'
+};
+
+export default function animatedDetails(
+	element: HTMLDetailsElement,
+	options: KeyframeAnimationOptions = defaultOptions
+): ActionReturn<KeyframeAnimationOptions, Attributes> {
 	const summary = element.querySelector('summary');
-	if (!summary) return;
+	if (!summary) return {};
 
-	const measureHeights = () => {
-		const summaryHeight = summary.clientHeight + 'px';
-
-		if (element.style.getPropertyValue(summaryHeightVar) !== summaryHeight) {
-			element.style.setProperty(summaryHeightVar, summaryHeight);
-		}
-
-		const wasOpen = element.open;
-
-		if (!wasOpen) {
-			element.open = true;
-		} else {
-			element.style.setProperty(fullHeightVar, '');
-		}
-
-		const fullHeight = element.scrollHeight + 'px';
-
-		element.style.setProperty(fullHeightVar, fullHeight);
-
-		if (!wasOpen) {
-			element.open = false;
-		}
+	options = {
+		...defaultOptions,
+		...options
 	};
 
-	const onClick = async (e: MouseEvent) => {
-		if (!element.open) return;
+	const { overflow } = getComputedStyle(element);
 
+	if (overflow !== 'hidden' && overflow !== 'clip' && DEV) {
+		console.warn(
+			'Using animated details on a details element which does not use overflow hidden or clip.'
+		);
+	}
+
+	let transitioning = false;
+
+	const animatePanel = (opening: boolean) => {
+		transitioning = true;
+
+		if (opening) {
+			element.open = true;
+		}
+
+		element.dispatchEvent(
+			new CustomEvent(opening ? 'openstart' : 'closestart', { detail: element })
+		);
+
+		const heightKeyframes = [`${summary.clientHeight}px`, `${element.clientHeight}px`];
+
+		if (!opening) {
+			heightKeyframes.reverse();
+		}
+
+		const animation = element.animate(
+			{
+				height: heightKeyframes
+			},
+			options
+		);
+
+		animation.oncancel =
+			animation.onfinish =
+			animation.onremove =
+				() => {
+					element.dispatchEvent(
+						new CustomEvent(opening ? 'openend' : 'closeend', { detail: element })
+					);
+
+					if (!opening) {
+						element.open = false;
+					}
+
+					transitioning = false;
+				};
+	};
+
+	const onClick = (e: Event) => {
 		e.preventDefault();
 
-		element.style.height = summary.clientHeight + 'px';
+		if (transitioning) return;
 
-		await transitionsFinished(element);
-
-		element.style.height = '';
-		element.open = false;
+		animatePanel(!element.open);
 	};
 
-	const onMutate: MutationCallback = (mutations) => {
-		for (const mutation of mutations) {
-			if (mutation.type !== 'childList' && mutation.type !== 'attributes') {
-				continue;
+	const onMutate: MutationCallback = (mutationList) => {
+		for (const mutation of mutationList) {
+			if (mutation.type === 'attributes' && mutation.attributeName === 'open') {
+				if (transitioning) return;
+
+				if (element.open) {
+					animatePanel(true);
+				}
 			}
-
-			if (mutation.type === 'attributes' && mutation.target === element) continue;
-
-			if (
-				mutation.type === 'attributes' &&
-				!dangerousAttributes.has(mutation.attributeName ?? '')
-			) {
-				continue;
-			}
-
-			measureHeights();
 		}
 	};
 
 	const observer = new MutationObserver(onMutate);
-
-	measureHeights();
-
+	observer.observe(element, { attributes: true });
 	summary.addEventListener('click', onClick);
-	observer.observe(element, {
-		attributes: true,
-		subtree: true,
-		childList: true
-	});
 
 	return {
 		destroy() {
-			summary.removeEventListener('click', onClick);
 			observer.disconnect();
+			summary.removeEventListener('click', onClick);
+		},
+		update(newOptions: KeyframeAnimationOptions = defaultOptions) {
+			options = {
+				...options,
+				...newOptions
+			};
 		}
 	};
-}
-
-async function transitionsFinished(element: HTMLElement) {
-	return new Promise<void>((resolve) => {
-		element.addEventListener(
-			'transitionend',
-			(e: TransitionEvent) => {
-				if (e.propertyName === 'height') {
-					resolve();
-				}
-			},
-			{ once: true }
-		);
-	});
 }

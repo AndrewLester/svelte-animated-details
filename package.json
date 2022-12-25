@@ -27,5 +27,8 @@
 	"peerDependencies": {
 		"svelte": "^3.50.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"esm-env": "^1.0.0"
+	}
 }
