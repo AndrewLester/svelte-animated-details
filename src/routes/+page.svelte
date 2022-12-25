@@ -19,6 +19,8 @@
 		overflow: hidden;
 		border: 1px solid gray;
 		border-radius: 5px;
+		transition: height 400ms ease-out;
+		height: var(--summary-height, auto);
 	}
 
 	summary {
@@ -27,5 +29,9 @@
 
 	details[open] > summary {
 		border-bottom: 1px solid gray;
+	}
+
+	details[open] {
+		height: var(--full-height, auto);
 	}
 </style>

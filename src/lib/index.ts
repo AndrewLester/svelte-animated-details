@@ -1,115 +1,44 @@
-import type { ActionReturn } from 'svelte/action';
-
-type EventHandler = (e: CustomEvent<HTMLDetailsElement>) => void;
-
-type Attributes = {
-	'on:openstart'?: EventHandler;
-	'on:openend'?: EventHandler;
-	'on:closestart'?: EventHandler;
-	'on:closeend'?: EventHandler;
-};
-
-const defaultOptions: KeyframeAnimationOptions = {
-	duration: 400,
-	easing: 'ease-out'
-};
-
-export default function animatedDetails(
-	element: HTMLDetailsElement,
-	options: KeyframeAnimationOptions = defaultOptions
-): ActionReturn<KeyframeAnimationOptions, Attributes> {
+export default function animatedDetails(element: HTMLDetailsElement) {
 	const summary = element.querySelector('summary');
-	if (!summary) return {};
+	if (!summary) return;
 
-	options = {
-		...defaultOptions,
-		...options
-	};
+	element.style.setProperty('--summary-height', summary.clientHeight + 'px');
+	element.open = true;
+	element.style.setProperty('--full-height', element.clientHeight + 'px');
+	element.open = false;
 
-	const { overflow } = getComputedStyle(element);
+	const onClick = async (e: MouseEvent) => {
+		if (!element.open) return;
 
-	if (overflow !== 'hidden' && overflow !== 'clip') {
-		console.warn(
-			'Using animated details on a details element which does not use overflow hidden or clip.'
-		);
-	}
-
-	let transitioning = false;
-
-	const animatePanel = (opening: boolean) => {
-		transitioning = true;
-
-		if (opening) {
-			element.open = true;
-		}
-
-		element.dispatchEvent(
-			new CustomEvent(opening ? 'openstart' : 'closestart', { detail: element })
-		);
-
-		const heightKeyframes = [`${summary.clientHeight}px`, `${element.clientHeight}px`];
-
-		if (!opening) {
-			heightKeyframes.reverse();
-		}
-
-		const animation = element.animate(
-			{
-				height: heightKeyframes
-			},
-			options
-		);
-
-		animation.oncancel =
-			animation.onfinish =
-			animation.onremove =
-				() => {
-					element.dispatchEvent(
-						new CustomEvent(opening ? 'openend' : 'closeend', { detail: element })
-					);
-
-					if (!opening) {
-						element.open = false;
-					}
-
-					transitioning = false;
-				};
-	};
-
-	const onClick = (e: Event) => {
 		e.preventDefault();
 
-		if (transitioning) return;
+		element.style.height = summary.clientHeight + 'px';
 
-		animatePanel(!element.open);
+		await transitionsFinished(element);
+
+		element.open = false;
+		element.style.height = '';
 	};
 
-	const onMutate: MutationCallback = (mutationList) => {
-		for (const mutation of mutationList) {
-			if (mutation.type === 'attributes' && mutation.attributeName === 'open') {
-				if (transitioning) return;
-
-				if (element.open) {
-					animatePanel(true);
-				}
-			}
-		}
-	};
-
-	const observer = new MutationObserver(onMutate);
-	observer.observe(element, { attributes: true });
 	summary.addEventListener('click', onClick);
 
 	return {
 		destroy() {
-			observer.disconnect();
 			summary.removeEventListener('click', onClick);
-		},
-		update(newOptions: KeyframeAnimationOptions = defaultOptions) {
-			options = {
-				...options,
-				...newOptions
-			};
 		}
 	};
+}
+
+async function transitionsFinished(element: HTMLElement) {
+	return new Promise<void>((resolve) => {
+		element.addEventListener(
+			'transitionend',
+			(e: TransitionEvent) => {
+				if (e.propertyName === 'height') {
+					resolve();
+				}
+			},
+			{ once: true }
+		);
+	});
 }
