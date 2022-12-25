@@ -1,38 +1,36 @@
-# create-svelte
+# svelte-animated-details
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+Add smooth animations to your `<details>` elements using one line of Svelte. Built on CSS variables, the animation is completely customizable with CSS transitions.
 
-## Creating a project
+**Demo**: [https://andrewlester.net/svelte-animated-details/](https://andrewlester.net/svelte-animated-details/)
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Configuration
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+Things you must do:
+- Give your `<details>` element `overflow: hidden` or `overflow: clip`.
+- Use the `--summary-height` and `--full-height` CSS variables for the default and `open` states respectfully.
+- Give the CSS variables defaults of `auto` so that everything works even if JS is disabled.
+- Add a `transition` to the default state.
 
-# create a new project in my-app
-npm create svelte@latest my-app
+An example configuration is shown below:
+
+```html
+<details>
+    <summary>Details</summary>
+    <p>Content</p>
+</details>
+
+<style>
+    details {
+        height: var(--summary-height, auto);
+        overflow: hidden;
+        transition: height 400ms ease-out;
+    }
+
+    details[open] {
+        height: var(--full-height, auto);
+    }
+</style>
 ```
 
-## Developing
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
