@@ -13,7 +13,7 @@ An example configuration is shown below:
 
 ```html
 <details>
-    <summary>Details</summary>
+    <summary>Summary</summary>
     <p>Content</p>
 </details>
 

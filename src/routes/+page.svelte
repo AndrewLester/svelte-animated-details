@@ -2,6 +2,7 @@
 	import animatedDetails from 'svelte-animated-details';
 	import { slide } from 'svelte/transition';
 	let unrelated = false;
+	let duration = 400;
 </script>
 
 <main>
@@ -9,10 +10,31 @@
 		<a href="https://github.com/AndrewLester/svelte-animated-details">svelte-animated-details</a>
 	</h1>
 
-	<button on:click={() => (unrelated = !unrelated)}>Unrelated</button>
+	<p>
+		Try <kbd>CTRL</kbd>/<kbd>CMD</kbd> + <kbd>F</kbd> and search for content inside the `&lt;details&gt;`.
+	</p>
+
+	<p>
+		Toggle a Svelte component inside the `&lt;details&gt;`:
+		<button on:click={() => (unrelated = !unrelated)}>Toggle</button>
+	</p>
+
+	<p>
+		<label for="duration">
+			Duration:
+			<input
+				id="duration"
+				min="0"
+				max="2000"
+				bind:value={duration}
+				placeholder="duration"
+				type="number"
+			/>
+		</label>
+	</p>
 
 	<h2>Simple</h2>
-	<details class="simple" use:animatedDetails>
+	<details class="simple" use:animatedDetails={{ duration }}>
 		<summary>Open me</summary>
 		<p>Whoa content crazy</p>
 		<p>Whoa content crazy</p>
@@ -24,8 +46,25 @@
 		{/if}
 	</details>
 
+	<details class="simple" use:animatedDetails>
+		<summary>Code</summary>
+		<pre>
+{`<details class="simple" use:animatedDetails={{ duration }}>
+	<summary>Open me</summary>
+	<p>Whoa content crazy</p>
+	<p>Whoa content crazy</p>
+	<p>Whoa content crazy</p>
+	<p>Whoa content crazy</p>
+
+	{#if unrelated}
+		Yoyo
+	{/if}
+</details>`}
+		</pre>
+	</details>
+
 	<h2>Complex</h2>
-	<details class="complex" use:animatedDetails>
+	<details class="complex" use:animatedDetails={{ duration }}>
 		<summary>Open me</summary>
 		<div class="content">
 			<p>Whoa content crazy</p>
@@ -41,6 +80,29 @@
 				/>
 			{/if}
 		</div>
+	</details>
+
+	<details class="simple" use:animatedDetails>
+		<summary>Code</summary>
+		<pre>
+{`<details class="complex" use:animatedDetails={{ duration }}>
+	<summary>Open me</summary>
+	<div class="content">
+		<p>Whoa content crazy</p>
+		<p>Whoa content crazy</p>
+		<p>Whoa content crazy</p>
+		<p>Whoa content crazy</p>
+
+		{#if unrelated}
+			<img
+				src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/2006_Ojiya_balloon_festival_011.jpg/1200px-2006_Ojiya_balloon_festival_011.jpg"
+				alt="Hot air balloon stock"
+				transition:slide
+			/>
+		{/if}
+	</div>
+</details>`}
+		</pre>
 	</details>
 </main>
 
@@ -109,5 +171,11 @@
 	.complex img {
 		display: block;
 		max-height: 25vh;
+	}
+
+	pre {
+		width: 100%;
+		overflow-x: auto;
+		margin: 0;
 	}
 </style>
