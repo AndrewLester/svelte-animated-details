@@ -12,7 +12,7 @@ You must:
 An example configuration is shown below:
 
 ```html
-<details>
+<details use:animatedDetails>
     <summary>Summary</summary>
     <p>Content</p>
 </details>

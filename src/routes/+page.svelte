@@ -65,7 +65,7 @@
 
 	<h2>Complex</h2>
 	<details class="complex" use:animatedDetails={{ duration }}>
-		<summary>Open me</summary>
+		<summary>Open me please</summary>
 		<div class="content">
 			<p>Whoa content crazy</p>
 			<p>Whoa content crazy</p>
@@ -137,6 +137,8 @@
 		border: 2px solid black;
 		border-radius: 5px;
 		background-color: bisque;
+		writing-mode: vertical-rl;
+		transform: scale(-1, -1);
 	}
 
 	.complex summary {
@@ -144,7 +146,7 @@
 		flex-flow: row nowrap;
 		padding: 1em 2em;
 		cursor: pointer;
-		border-radius: 5px;
+		border-radius: 3px;
 		gap: 10px;
 		font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode',
 			Geneva, Verdana, sans-serif;
@@ -156,7 +158,6 @@
 
 	.complex summary::before {
 		content: '+ ';
-		font-family: monospace;
 		font-size: 1.5rem;
 	}
 
@@ -171,6 +172,7 @@
 	.complex img {
 		display: block;
 		max-height: 25vh;
+		transform: scale(-1, -1);
 	}
 
 	pre {

@@ -27,7 +27,7 @@ export default function animatedDetails(
 		...options
 	};
 
-	const { overflow } = getComputedStyle(element);
+	const { overflow, writingMode } = getComputedStyle(element);
 
 	if (overflow !== 'hidden' && overflow !== 'clip' && DEV) {
 		console.warn(
@@ -48,15 +48,17 @@ export default function animatedDetails(
 			new CustomEvent(opening ? 'openstart' : 'closestart', { detail: element })
 		);
 
-		const heightKeyframes = [`${summary.clientHeight}px`, `${element.clientHeight}px`];
+		const blockSizeProperty = writingMode.startsWith('vertical') || writingMode.startsWith('tb') ? 'clientWidth' : 'clientHeight';
+
+		const blockSizeKeyframes = [`${summary[blockSizeProperty]}px`, `${element[blockSizeProperty]}px`];
 
 		if (!opening) {
-			heightKeyframes.reverse();
+			blockSizeKeyframes.reverse();
 		}
 
 		const animation = element.animate(
 			{
-				height: heightKeyframes
+				blockSize: blockSizeKeyframes
 			},
 			options
 		);
