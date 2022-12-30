@@ -29,7 +29,7 @@ export default function animatedDetails(
 
 	const { overflow, writingMode } = getComputedStyle(element);
 
-	if (overflow !== 'hidden' && overflow !== 'clip' && DEV) {
+	if (DEV && overflow !== 'hidden' && overflow !== 'clip') {
 		console.warn(
 			'Using animated details on a details element which does not use overflow hidden or clip.'
 		);

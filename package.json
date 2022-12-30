@@ -1,6 +1,6 @@
 {
 	"name": "svelte-animated-details",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"homepage": "https://github.com/AndrewLester/svelte-animated-details",
 	"scripts": {
 		"dev": "vite dev",
