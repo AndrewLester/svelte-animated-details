@@ -135,6 +135,7 @@
 
 	.complex {
 		border: 2px solid black;
+		border-block-end-color: transparent;
 		border-radius: 5px;
 		background-color: bisque;
 		writing-mode: vertical-rl;
@@ -153,6 +154,7 @@
 		font-weight: bold;
 		background-color: rgba(188, 199, 188);
 		box-sizing: border-box;
+		border-block-end: 2px solid blue;
 		align-items: center;
 	}
 

@@ -48,9 +48,12 @@ export default function animatedDetails(
 			new CustomEvent(opening ? 'openstart' : 'closestart', { detail: element })
 		);
 
-		const blockSizeProperty = writingMode.startsWith('vertical') || writingMode.startsWith('tb') ? 'clientWidth' : 'clientHeight';
+		const widthChanges = writingMode.startsWith('vertical') || writingMode.startsWith('tb');
 
-		const blockSizeKeyframes = [`${summary[blockSizeProperty]}px`, `${element[blockSizeProperty]}px`];
+		const blockSizeKeyframes = [
+			`${summary[widthChanges ? 'offsetWidth' : 'offsetHeight']}px`,
+			`${element[widthChanges ? 'clientWidth' : 'clientHeight']}px`
+		];
 
 		if (!opening) {
 			blockSizeKeyframes.reverse();
