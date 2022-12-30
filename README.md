@@ -4,6 +4,10 @@ Add a smooth accordion animation to your `<details>` elements using one line of 
 
 **Demo**: [https://andrewlester.net/svelte-animated-details/](https://andrewlester.net/svelte-animated-details/)
 
+## Installation
+
+    npm i -D svelte-animated-details
+
 ## Configuration
 
 You must:
