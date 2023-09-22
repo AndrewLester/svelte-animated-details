@@ -1,6 +1,6 @@
 {
 	"name": "svelte-animated-details",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"homepage": "https://github.com/AndrewLester/svelte-animated-details",
 	"scripts": {
 		"dev": "vite dev",
@@ -14,20 +14,20 @@
 		"build:site": "vite build"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-static": "^1.0.0",
+		"@sveltejs/adapter-static": "^2.0.0",
 		"@sveltejs/kit": "^1.0.0",
-		"@sveltejs/package": "^1.0.0",
+		"@sveltejs/package": "^2.0.0",
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.8.1",
-		"svelte": "^3.54.0",
-		"svelte-check": "^2.9.2",
+		"svelte": "^4.0.0",
+		"svelte-check": "^3.5.2",
 		"tslib": "^2.4.1",
 		"typescript": "^4.9.3",
 		"vite": "^4.0.0",
 		"esm-env": "^1.0.0"
 	},
 	"peerDevDependencies": {
-		"svelte": "^3.50.0"
+		"svelte": ">=3.46.6"
 	},
 	"type": "module"
 }

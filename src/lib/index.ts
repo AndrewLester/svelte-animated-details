@@ -1,4 +1,4 @@
-import type { ActionReturn } from 'svelte/action';
+import type { Action } from 'svelte/action';
 import { DEV } from 'esm-env';
 
 type EventHandler = (e: CustomEvent<HTMLDetailsElement>) => void;
@@ -15,10 +15,11 @@ const defaultOptions: KeyframeAnimationOptions = {
 	easing: 'ease-out'
 };
 
-export default function animatedDetails(
-	element: HTMLDetailsElement,
-	options: KeyframeAnimationOptions = defaultOptions
-): ActionReturn<KeyframeAnimationOptions, Attributes> {
+export const animatedDetails: Action<
+	HTMLDetailsElement,
+	KeyframeAnimationOptions | undefined,
+	Attributes
+> = (element: HTMLDetailsElement, options = defaultOptions) => {
 	const summary = element.querySelector('summary');
 	if (!summary) return {};
 
@@ -118,4 +119,5 @@ export default function animatedDetails(
 			};
 		}
 	};
-}
+};
+export default animatedDetails;
